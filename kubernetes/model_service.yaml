@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: insurance-charges-model-deployment
+  labels:
+    app: insurance-charges-model-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: insurance-charges-model-service
+  template:
+    metadata:
+      labels:
+        app: insurance-charges-model-service
+    spec:
+      containers:
+        - name: insurance-charges-model
+          image: registry.digitalocean.com/dev-model-services-container-registry/insurance_charges_model_service:0.1.0
+          ports:
+          - containerPort: 80
+            protocol: TCP
+          imagePullPolicy: Always
+          env:
+            # environment variable pointing at the configuration file to use
+            - name: REST_CONFIG
+              value: ./configuration/rest_configuration3.yaml
+            # environment variables with downward API information
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+      nodeSelector:
+        doks.digitalocean.com/node-pool: "dev-model-services-default-worker-pool"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: insurance-charges-model-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: insurance-charges-model-service
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 8000

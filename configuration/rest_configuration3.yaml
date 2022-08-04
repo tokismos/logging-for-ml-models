@@ -1,0 +1,41 @@
+service_title: Insurance Charges Model Service
+models:
+  - qualified_name: insurance_charges_model
+    class_path: insurance_charges_model.prediction.model.InsuranceChargesModel
+    create_endpoint: true
+    decorators:
+      - class_path: ml_model_logging.prediction_id_decorator.PredictionIDDecorator
+      - class_path: ml_model_logging.logging_decorator.LoggingDecorator
+        configuration:
+          input_fields: ["prediction_id"]
+          output_fields: ["prediction_id"]
+logging:
+    version: 1
+    disable_existing_loggers: true
+    formatters:
+      json_formatter:
+        class: pythonjsonlogger.jsonlogger.JsonFormatter
+        format: "%(asctime)s %(hostname)s %(pod_name)s %(node_name)s %(process)s %(thread)s %(pathname)s %(lineno)s %(levelname)s %(message)s"
+    filters:
+      hostname_filter:
+        "()": ml_model_logging.filters.HostnameFilter
+      environment_info_filter:
+        "()": ml_model_logging.filters.EnvironmentInfoFilter
+        env_variables:
+        - POD_NAME
+        - NODE_NAME
+    handlers:
+      stdout:
+        level: INFO
+        class: logging.StreamHandler
+        stream: ext://sys.stdout
+        formatter: json_formatter
+        filters:
+        - hostname_filter
+        - environment_info_filter
+    loggers:
+      root:
+        level: INFO
+        handlers:
+        - stdout
+        propagate: false
