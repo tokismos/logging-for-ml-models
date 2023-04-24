@@ -14,7 +14,7 @@ class LoggingDecorator(MLModelDecorator):
     def predict(self, data):
         if self.__dict__["_logger"] is None:
             self.__dict__["_logger"] = logging.getLogger("{}_{}".format(
-                self._model.qualified_name, "_logger"))
+                self._model.qualified_name, "logger"))
 
         # extra fields to be added to the log record
         extra = {

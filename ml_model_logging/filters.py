@@ -2,15 +2,6 @@
 import os
 import logging
 from typing import List
-import platform
-
-
-class HostnameFilter(logging.Filter):
-    """Logging filter that adds the hostname to log records."""
-
-    def filter(self, record):
-        record.hostname = platform.uname()[1]
-        return True
 
 
 class EnvironmentInfoFilter(logging.Filter):
