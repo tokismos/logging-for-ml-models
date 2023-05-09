@@ -2,7 +2,7 @@
 
 Logging for machine learning models.
 
-This code is used in this [blog post]().
+This code is used in this [blog post](https://www.tekhnoal.com/logging-for-ml-models.html).
 
 ## Requirements
 
