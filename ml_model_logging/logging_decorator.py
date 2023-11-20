@@ -9,9 +9,11 @@ class LoggingDecorator(MLModelDecorator):
     def __init__(self, input_fields: Optional[List[str]] = None,
                  output_fields: Optional[List[str]] = None) -> None:
         super().__init__(input_fields=input_fields, output_fields=output_fields)
-        self.__dict__["_logger"] = None
+        self.__dict__["_logger"] = logging.getLogger("root") # C'est la ligne qu'on modifié
+
 
     def predict(self, data):
+
         if self.__dict__["_logger"] is None:
             self.__dict__["_logger"] = logging.getLogger("{}_{}".format(
                 self._model.qualified_name, "logger"))
